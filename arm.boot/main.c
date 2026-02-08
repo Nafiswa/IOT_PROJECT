@@ -1,5 +1,6 @@
 #include "main.h"
 #include "uart.h"
+#include "console.h"
 
 /*
  * Define ECHO_ZZZ to have a periodic reminder that this code is polling
@@ -13,6 +14,12 @@
 void panic() {
   while (1)
 	  ;
+}
+
+// Callback pour les lignes saisies - ne fait rien pour l'instant
+void line_entered(char* line) {
+    // Pour l'instant, on fait rien , on interperète pas et on traite pas ce qui est tapé 
+    // on les affiches seulement dans la console
 }
 
 // faire une boucle de 1sec
@@ -33,28 +40,16 @@ void _start() {
 
   uart_send_string(UART0, "\nHello world!\n");
 
-  int i = 0;
-  int count = 0;
+  // Initialiser la console 
+  console_init(line_entered);
+  uart_send_string(UART0, "Console ready!\n");
+
+  // Boucle principale avec la console
   while (1) {
-    uint8_t c;
-#ifdef ECHO_ZZZ
-    while (0 == uart_receive(UART0, &c)) {
-      count++;
-      if (count > 50000000) {
-        uart_send_string(UART0, "\n\rZzzz....\n\r");
-        count = 0;
-      }
-    }
-#else
-    if (0==uart_receive(UART0,&c))
+    unsigned char c;
+    if (0 == uart_receive(UART0, &c))
       continue;
-#endif
-    if (c == 13) {
-      uart_send(UART0, '\r');
-      uart_send(UART0, '\n');
-    } else {
-      uart_send(UART0, c);
-    }
+    console_echo(c);
   }
 }
 
