@@ -36,7 +36,7 @@ swi_handler_addr: .word _swi_handler
 prefetch_abort_handler_addr: .word _prefetch_abort_handler
 data_abort_handler_addr: .word _data_abort_handler
 unused_handler_addr: .word _unused_handler
-irq_handler_addr: .word _isr_handler
+irq_handler_addr: .word _irq_handler
 fiq_handler_addr: .word _fiq_handler
 
 _isr_handler:

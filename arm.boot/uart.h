@@ -38,5 +38,12 @@ void uart_send(void* uart, uint8_t b);
  */
 void uart_send_string(void* uart, const unsigned char *s);
 
+/*
+ * UART interrupt management
+ */
+void uart_enable_rx_interrupt(void* uart);
+void uart_disable_rx_interrupt(void* uart);
+void uart_clear_interrupt(void* uart);
+
 
 #endif /* _UART_H_ */

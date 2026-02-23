@@ -23,12 +23,18 @@
 
 #define UART_DR 0x00
 #define UART_FR 0x18
+#define UART_IMSC 0x38  // Interrupt Mask Set/Clear Register
+#define UART_ICR 0x44   // Interrupt Clear Register
 
 #define UART_TXFE (1<<7)
 #define UART_RXFF (1<<6)
 #define UART_TXFF (1<<5)
 #define UART_RXFE (1<<4)
 #define UART_BUSY (1<<3)
+
+// Interrupt bits
+#define UART_RXIM (1<<4)  // Receive interrupt mask
+#define UART_TXIM (1<<5)  // Transmit interrupt mask
 
 /*
  * See "uart.h"
@@ -63,4 +69,22 @@ void uart_send_string(void* uart, const unsigned char *s) {
     uart_send(uart, (uint8_t)*s);
     s++;
   }
+}
+
+
+
+void uart_enable_rx_interrupt(void* uart) {
+  uint32_t* uart_imsc = (uint32_t*) (uart + UART_IMSC);
+  *uart_imsc |= UART_RXIM;  // Enable receive interrupt
+}
+
+
+void uart_disable_rx_interrupt(void* uart) {
+  uint32_t* uart_imsc = (uint32_t*) (uart + UART_IMSC);
+  *uart_imsc &= ~UART_RXIM;  // Disable receive interrupt
+}
+
+void uart_clear_interrupt(void* uart) {
+  uint32_t* uart_icr = (uint32_t*) (uart + UART_ICR);
+  *uart_icr = 0xFFFFFFFF;  // Clear all interrupts
 }

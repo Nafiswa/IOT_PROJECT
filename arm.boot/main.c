@@ -1,6 +1,7 @@
 #include "main.h"
 #include "uart.h"
 #include "console.h"
+#include "isr.h"  
 
 /*
  * Define ECHO_ZZZ to have a periodic reminder that this code is polling
@@ -10,6 +11,15 @@
  * But this would require setting up interrupts...
  */
 #define ECHO_ZZZ
+
+static int test_interruptions = 0; 
+// Handler simple pour tester
+void test_handler(uint32_t irq, void *cookie) {
+    test_interruptions++;
+    kprintf("*** IRQ DETECTEE ! Total: %d ***\n", test_interruptions);
+    unsigned char c;
+    uart_receive(UART0, &c);
+}
 
 void panic() {
   while (1)
@@ -39,19 +49,23 @@ void _start() {
   uart_send_string(UART0, "  - Then type in \"quit\" to stop QEMU.\n");
 
   uart_send_string(UART0, "\nHello world!\n");
+ 
+  // ===== TEST INTERRUPTION SIMPLE =====
+  kprintf("Test interruption: setup...\n");
+  _irqs_setup();           
+  irqs_setup();          
+  uart_enable_rx_interrupt(UART0);  
+  irq_enable(UART0_IRQ, test_handler, NULL);  // Register handler
+  irqs_enable();        
 
+ 
   // Initialiser la console 
   console_init(line_entered);
   uart_send_string(UART0, "Console ready!\n");
 
-  // Boucle principale avec la console
+  // Boucle principale avec la console + test interruption
+  int compteur_affichage = 0;
   while (1) {
-    unsigned char c;
-    if (0 == uart_receive(UART0, &c))
-      continue;
-    console_echo(c);
+    wfi();  // Attendre une interruption (ex: UART) 
   }
 }
-
-
-
