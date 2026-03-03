@@ -91,4 +91,27 @@ void mmio_clear(void* bar, uint32_t offset, uint32_t bits) {
   *((uint32_t*)(bar+offset)) = value;
 }
 
+/*
+ * Système minimal d'événements et timer
+ */
+extern volatile uint32_t system_ticks;
+extern volatile uint32_t total_events;
+
+// Timer & événements
+void timer_init_1ms(void);
+void system_tick_handler(uint32_t irq, void* cookie);
+
+// Console avancée  
+void console_update_status(void);
+void console_blink_cursor(void);
+void console_process_input(unsigned char c);
+
+#define EVENT_BUFFER_SIZE 16
+typedef struct { uint8_t type, data; } event_t;
+extern event_t event_buffer[EVENT_BUFFER_SIZE];
+extern volatile uint8_t event_head, event_tail;
+
+void event_push(uint8_t type, uint8_t data);
+uint8_t event_pop(event_t* event);
+
 #endif /* MAIN_H_ */

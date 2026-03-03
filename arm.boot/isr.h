@@ -54,16 +54,28 @@
  *       TIMER(0&1) IRQ = 4
  */
 #define TIMER3_IRQ 5
-#define TIMER3_IRQ_MASK (1<<TIMER3_IRQ_MASK)
+#define TIMER3_IRQ_MASK (1<<TIMER3_IRQ)
 
 #define TIMER2_IRQ 5
-#define TIMER2_IRQ_MASK (1<<TIMER2_IRQ_MASK)
+#define TIMER2_IRQ_MASK (1<<TIMER2_IRQ)
 
 #define TIMER1_IRQ 4
-#define TIMER1_IRQ_MASK (1<<TIMER1_IRQ_MASK)
+#define TIMER1_IRQ_MASK (1<<TIMER1_IRQ)
 
 #define TIMER0_IRQ 4
-#define TIMER0_IRQ_MASK (1<<TIMER0_IRQ_MASK)
+#define TIMER0_IRQ_MASK (1<<TIMER0_IRQ)
+
+/*
+ * Timer base addresses and basic control
+ */
+#define TIMER01_BASE 0x101E2000
+#define TIMER_LOAD    0x00
+#define TIMER_CONTROL 0x08
+#define TIMER_INTCLR  0x0C
+#define TIMER_CTRL_ENABLE    (1<<7)
+#define TIMER_CTRL_PERIODIC  (1<<6)
+#define TIMER_CTRL_INTENABLE (1<<5)
+#define TIMER_CTRL_32BIT     (1<<1)
 
 
 /*
